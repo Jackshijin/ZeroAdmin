@@ -37,6 +37,8 @@ const modules: Record<string, any> = import.meta.glob(
   }
 );
 
+console.log("routes-import", modules);
+
 /** 原始静态路由（未做任何处理） */
 const routes = [];
 

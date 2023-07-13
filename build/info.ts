@@ -20,9 +20,7 @@ export function viteBuildInfo(): Plugin {
       console.log(
         bold(
           green(
-            `👏欢迎使用${blue(
-              "[vue-pure-admin]"
-            )}，如果您感觉不错，记得点击后面链接给个star哦💖 https://github.com/pure-admin/vue-pure-admin`
+            `👏好厉害哦跑起来了，${blue("life is a fucking movie")}，it sucks`
           )
         )
       );

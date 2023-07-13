@@ -16,7 +16,9 @@ export const useUserStore = defineStore({
     username:
       storageSession().getItem<DataInfo<number>>(sessionKey)?.username ?? "",
     // 页面级别权限
-    roles: storageSession().getItem<DataInfo<number>>(sessionKey)?.roles ?? []
+    roles: storageSession().getItem<DataInfo<number>>(sessionKey)?.roles ?? [],
+    verifyCode: "",
+    currentPage: 0
   }),
   actions: {
     /** 存储用户名 */
@@ -27,6 +29,17 @@ export const useUserStore = defineStore({
     SET_ROLES(roles: Array<string>) {
       this.roles = roles;
     },
+
+    /** 储存验证码 */
+    SET_VERIFYCODE(verifyCode: string) {
+      this.verifyCode = verifyCode;
+    },
+
+    /** 存储登录页面显示哪个组件 */
+    SET_CURRENTPAGE(value: number) {
+      this.currentPage = value;
+    },
+
     /** 登入 */
     async loginByUsername(data) {
       return new Promise<UserResult>((resolve, reject) => {

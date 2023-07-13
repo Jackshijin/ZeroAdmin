@@ -9,6 +9,16 @@ import HomeFilled from "@iconify-icons/ep/home-filled";
 import InformationLine from "@iconify-icons/ri/information-line";
 import Lollipop from "@iconify-icons/ep/lollipop";
 
+import Card from "@iconify-icons/ri/bank-card-line";
+import ListCheck from "@iconify-icons/ri/list-check";
+import Histogram from "@iconify-icons/ep/histogram";
+import UbuntuFill from "@iconify-icons/ri/ubuntu-fill";
+
 addIcon("homeFilled", HomeFilled);
 addIcon("informationLine", InformationLine);
 addIcon("lollipop", Lollipop);
+
+addIcon("card", Card);
+addIcon("listCheck", ListCheck);
+addIcon("histogram", Histogram);
+addIcon("ubuntuFill", UbuntuFill);
