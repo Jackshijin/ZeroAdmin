@@ -3,7 +3,7 @@
  * @Author: shrijin
  * @Date: 2023-07-12 09:21:03
  * @LastEditors: shrijin
- * @LastEditTime: 2023-07-13 11:04:48
+ * @LastEditTime: 2023-07-14 10:44:57
  */
 
 import { able } from "@/router/enums";
@@ -103,6 +103,62 @@ export default {
       component: () => import("@/views/able/print.vue"),
       meta: {
         title: "打印"
+      }
+    },
+    {
+      path: "/able/qrcode",
+      name: "Qrcode",
+      component: () => import("@/views/able/qrcode.vue"),
+      meta: {
+        title: "二维码"
+      }
+    },
+    {
+      path: "/able/sensitive",
+      name: "Sensitive",
+      component: () => import("@/views/able/sensitive.vue"),
+      meta: {
+        title: "敏感词"
+      }
+    },
+    {
+      path: "/able/swiper",
+      name: "Swiper",
+      component: () => import("@/views/able/swiper.vue"),
+      meta: {
+        title: "Swiper轮播"
+      }
+    },
+    {
+      path: "/able/timeline",
+      name: "Timeline",
+      component: () => import("@/views/able/timeline.vue"),
+      meta: {
+        title: "时间线"
+      }
+    },
+    {
+      path: "/able/watermark",
+      name: "Watermark",
+      component: () => import("@/views/able/watermark.vue"),
+      meta: {
+        title: "水印"
+      }
+    },
+    {
+      path: "/able/watermark2",
+      name: "Watermark2",
+      component: () => import("@/views/able/watermark2.vue"),
+      meta: {
+        title: "高级水印"
+      }
+    },
+    {
+      path: "/able/virtual-list",
+      name: "VirtualList",
+      component: () => import("@/views/able/virtual-list/index.vue"),
+      meta: {
+        title: "虚拟列表"
       }
     }
   ]

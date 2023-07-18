@@ -7,7 +7,6 @@ import {
   PropType,
   defineComponent
 } from "vue";
-
 import "./index.scss";
 import propTypes from "@/utils/propTypes";
 import { isString, cloneDeep } from "@pureadmin/utils";
@@ -25,20 +24,20 @@ interface QrcodeLogo {
 }
 
 const props = {
+  // img 或者 canvas,img不支持logo嵌套
   tag: propTypes.string
     .validate((v: string) => ["canvas", "img"].includes(v))
     .def("canvas"),
+  // 二维码内容
   text: {
     type: [String, Array] as PropType<string | Recordable[]>,
     default: null
   },
-
   // qrcode.js配置项
   options: {
     type: Object as PropType<QRCodeRenderersOptions>,
     default: (): QRCodeRenderersOptions => ({})
   },
-
   // 宽度
   width: propTypes.number.def(200),
   // logo
@@ -46,9 +45,9 @@ const props = {
     type: [String, Object] as PropType<Partial<QrcodeLogo> | string>,
     default: (): QrcodeLogo | string => ""
   },
-  // 过期与否
+  // 是否过期
   disabled: propTypes.bool.def(false),
-  // 过期显示内容
+  // 过期提示内容
   disabledText: propTypes.string.def("")
 };
 
@@ -59,7 +58,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { toCanvas, toDataURL } = QRCode;
     const loading = ref(true);
-    const wrapRef = ref<Nullable<HTMLCanvasElement | HTMLElement>>(null);
+    const wrapRef = ref<Nullable<HTMLCanvasElement | HTMLImageElement>>(null);
     const renderText = computed(() => String(props.text));
     const wrapStyle = computed(() => {
       return {
@@ -71,11 +70,10 @@ export default defineComponent({
       await nextTick();
       const options = cloneDeep(props.options || {});
       if (props.tag === "canvas") {
-        // 容错率：默认对内容少的采用高容错率，内容多的用低容错率
+        // 容错率，默认对内容少的二维码采用高容错率，内容多的二维码采用低容错率
         options.errorCorrectionLevel =
           options.errorCorrectionLevel ||
           getErrorCorrectionLevel(unref(renderText));
-
         const _width: number = await getOriginWidth(unref(renderText), options);
         options.scale =
           props.width === 0 ? undefined : (props.width / _width) * 4;
@@ -103,7 +101,6 @@ export default defineComponent({
         loading.value = false;
       }
     };
-
     watch(
       () => renderText.value,
       val => {
@@ -115,7 +112,6 @@ export default defineComponent({
         immediate: true
       }
     );
-
     const createLogoCode = (canvasRef: HTMLCanvasElement) => {
       const canvasWidth = canvasRef.width;
       const logoOptions: QrcodeLogo = Object.assign(
@@ -144,6 +140,7 @@ export default defineComponent({
       const logoBgXY = (canvasWidth * (1 - logoSize - borderSize)) / 2;
       const ctx = canvasRef.getContext("2d");
       if (!ctx) return;
+      // logo 底色
       canvasRoundRect(ctx)(
         logoBgXY,
         logoBgXY,
@@ -153,19 +150,17 @@ export default defineComponent({
       );
       ctx.fillStyle = bgColor;
       ctx.fill();
-
       // logo
       const image = new Image();
       if (crossOrigin || logoRadius) {
         image.setAttribute("crossOrigin", crossOrigin);
       }
       (image as any).src = logoSrc;
-
+      // 使用image绘制可以避免某些跨域情况
       const drawLogoWithImage = (image: HTMLImageElement) => {
         ctx.drawImage(image, logoXY, logoXY, logoWidth, logoWidth);
       };
-
-      // 使用canvas绘制
+      // 使用canvas绘制以获得更多的功能
       const drawLogoWithCanvas = (image: HTMLImageElement) => {
         const canvasImage = document.createElement("canvas");
         canvasImage.width = logoXY + logoWidth;
@@ -181,8 +176,7 @@ export default defineComponent({
           ctx.fill();
         }
       };
-
-      // 绘制logo到canvas上
+      // 将 logo绘制到 canvas上
       return new Promise((resolve: any) => {
         image.onload = () => {
           logoRadius ? drawLogoWithCanvas(image) : drawLogoWithImage(image);
@@ -190,8 +184,7 @@ export default defineComponent({
         };
       });
     };
-
-    // 得到原qrcode大小
+    // 得到原QrCode的大小，以便缩放得到正确的QrCode大小
     const getOriginWidth = async (
       content: string,
       options: QRCodeRenderersOptions
@@ -200,8 +193,7 @@ export default defineComponent({
       await toCanvas(_canvas, content, options);
       return _canvas.width;
     };
-
-    // 内容少的QrCode,增大容错率
+    // 对于内容少的QrCode，增大容错率
     const getErrorCorrectionLevel = (content: string) => {
       if (content.length > 36) {
         return "M";
@@ -211,8 +203,7 @@ export default defineComponent({
         return "H";
       }
     };
-
-    // 用于绘制图像
+    // 用于绘制圆角
     const canvasRoundRect = (ctx: CanvasRenderingContext2D) => {
       return (x: number, y: number, w: number, h: number, r: number) => {
         const minSize = Math.min(w, h);
@@ -222,21 +213,20 @@ export default defineComponent({
         ctx.beginPath();
         ctx.moveTo(x + r, y);
         ctx.arcTo(x + w, y, x + w, y + h, r);
-        ctx.arcTo(x + w, y, x + w, y + h, r);
+        ctx.arcTo(x + w, y + h, x, y + h, r);
         ctx.arcTo(x, y + h, x, y, r);
         ctx.arcTo(x, y, x + w, y, r);
         ctx.closePath();
         return ctx;
       };
     };
-
     const clickCode = () => {
       emit("click");
     };
     const disabledClick = () => {
       emit("disabled-click");
     };
-    return () => {
+    return () => (
       <>
         <div
           v-loading={unref(loading)}
@@ -265,7 +255,7 @@ export default defineComponent({
             </div>
           )}
         </div>
-      </>;
-    };
+      </>
+    );
   }
 });
