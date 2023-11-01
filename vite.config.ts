@@ -1,3 +1,10 @@
+/*
+ * @Description:
+ * @Author: shrijin
+ * @Date: 2023-07-07 10:40:47
+ * @LastEditors: shrijin
+ * @LastEditTime: 2023-07-28 10:34:50
+ */
 import dayjs from "dayjs";
 import { resolve } from "path";
 import pkg from "./package.json";

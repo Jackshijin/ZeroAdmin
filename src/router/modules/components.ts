@@ -103,6 +103,14 @@ export default {
       meta: {
         title: "瀑布流"
       }
+    },
+    {
+      path: "/components/esign",
+      name: "ESign",
+      component: () => import("@/views/components/sign/index.vue"),
+      meta: {
+        title: "电子签名"
+      }
     }
   ]
 };
